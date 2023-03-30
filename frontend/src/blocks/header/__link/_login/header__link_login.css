@@ -1,0 +1,22 @@
+.header__link_login {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 22px;
+    text-decoration: none;
+    color: #fff;
+    margin-bottom: 41px;
+    display: flex;
+    margin-top: 8px;
+    }
+
+    @media screen and (max-width: 650px) {
+        .header__link_login {
+            margin-right: 30px;
+        }
+    }
+
+    @media screen and (max-width: 400px) {
+        .header__link_login {
+            display: none;
+        }
+    }

@@ -1,0 +1,15 @@
+.auth__input {
+    margin-bottom: 26px;
+    border: none;
+    border-bottom: 2px solid rgba(255, 255, 255);
+    background-color: black;
+    height: 27px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 17px;
+    color: white;
+}
+
+.auth__input:nth-child(2) {
+    margin: 0;
+}

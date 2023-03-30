@@ -1,0 +1,42 @@
+.profile__avatar {
+    background-image: url(../../../image/avatar.png);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    margin: 0 30px 0 0;
+    width: 120px;
+    height: 120px;
+    position: relative;
+    cursor: pointer;
+    transition: background-image 1s;
+}
+
+.profile__avatar::after {
+    opacity: 1;
+    content: '';
+    position: absolute;
+    display: none;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(../../../image/corandash.png);
+    }
+
+.profile__avatar:hover {
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.8) 0 100%), url(../../../image/avatar.png);
+}
+
+.profile__avatar:hover::after {
+    display: block;
+}
+
+
+@media screen and (max-width:650px) {
+    .profile__avatar {
+        margin: 0;
+    }
+}

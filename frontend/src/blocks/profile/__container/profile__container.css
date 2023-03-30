@@ -1,0 +1,12 @@
+.profile__container {
+    margin: 28px 0 0 0;
+    display: flex;
+    align-items: baseline;
+}
+
+@media screen and (max-width: 650px) {
+    .profile__container {
+        margin-left: 26px;
+        margin-top: 26px;
+    } 
+}

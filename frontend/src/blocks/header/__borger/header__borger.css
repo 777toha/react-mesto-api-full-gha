@@ -1,0 +1,13 @@
+.header__borger {
+    display: none;
+}
+
+@media screen and (max-width: 400px) {
+    .header__borger {
+        display: table-cell;
+        margin-right: 30px;
+        margin-bottom: auto;
+        margin-top: 0;
+        cursor: pointer;
+    }
+}
