@@ -119,11 +119,17 @@ const login = (req, res, next) => {
       }
       const data = await bcrypt.compare(password, user.password);
       if (data) {
+<<<<<<< HEAD
         const token = jwt.sign(
           { _id: user._id },
           'some-secret-key',
           { expiresIn: '7d' }
         );
+=======
+        const token = jwt.sign({ _id: user._id }, 
+NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+ { expiresIn: '7d' });
+>>>>>>> de96dcf0d4c6e83f5cce5fadd999000577820ed1
         return res.cookie('jwt', token, {
           httpOnly: true,
         }).send({ message: 'Успешно' });
