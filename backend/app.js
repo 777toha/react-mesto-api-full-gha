@@ -15,6 +15,31 @@ const NotFoundError = require('./errors/NotFoundError');
 const app = express();
 const PORT = 3000;
 
+const allowedCors = [
+  'https://project-mesto.antonlystso.nomoredomains.work',
+  'https://mesto.antonlystsov.back.nomoredomains.work',
+  'localhost:3000',
+];
+
+app.use((req, res, next) => {
+  const { origin } = req.headers;
+  
+  const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+  const requestHeaders = req.headers['access-control-request-headers'];
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
+  }
+  if (req === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+    res.header('Access-Control-Allow-Headers', requestHeaders);
+
+    return res.status(200).send();
+  }
+
+  next();
+});
+
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(bodyParser.json());
@@ -26,7 +51,7 @@ app.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
-}); 
+});
 
 app.post('/signup', postUsersValidation, postUsers);
 app.post('/signin', loginValidation, login);
