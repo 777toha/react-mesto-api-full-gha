@@ -1,11 +1,12 @@
-const Cards = require('../models/cards');
+const Cards = require('../models/card');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
-const InternalServerError = require('../errors/InternalServerError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
 const getCards = (req, res, next) => {
   Cards.find({})
+    .populate(['owner'])
+    .populate(['likes'])
     .then((user) => {
       res.send(user);
     })
@@ -23,7 +24,7 @@ const postCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные'));
       } else {
-        next(new InternalServerError('На сервере произошла ошибка'));
+        next(err);
       }
     });
 };
@@ -50,7 +51,7 @@ const deleteCard = (req, res, next) => {
       } else if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Такая карточка не найдена'));
       } else {
-        next(new InternalServerError('На сервере произошла ошибка'));
+        next(err);
       }
     });
 };
@@ -71,7 +72,7 @@ const putCardLike = (req, res, next) => {
       } else if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Такая карточка не найдена'));
       } else {
-        next(new InternalServerError('На сервере произошла ошибка'));
+        next(err);
       }
     });
 };
@@ -92,7 +93,7 @@ const deleteCardLike = (req, res, next) => {
       } else if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Такая карточка не найдена'));
       } else {
-        next(new InternalServerError('На сервере произошла ошибка'));
+        next(err);
       }
     });
 };

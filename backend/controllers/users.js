@@ -6,7 +6,6 @@ const User = require('../models/user');
 
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
-const InternalServerError = require('../errors/InternalServerError');
 const ConflictError = require('../errors/ConflictError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
@@ -52,10 +51,10 @@ const postUsers = (req, res, next) => {
           if (err.name === 'ValidationError') {
             next(new BadRequestError('Некорректные данные'));
           }
-          if (err.name === 'MongoServerError') {
+          if (err.code === 11000) {
             next(new ConflictError('Такой email уже существует'));
           } else {
-            next(new InternalServerError('На сервере произошла ошибка'));
+            next(err);
           }
         });
     });
@@ -73,7 +72,7 @@ const getUsersById = (req, res, next) => {
       } else if (err.name === 'DocumentNotFoundError') {
         next(new NotFoundError('Такой пользователь не найден'));
       } else {
-        next(new InternalServerError('На сервере произошла ошибка'));
+        next(err);
       }
     });
 };
@@ -81,7 +80,7 @@ const getUsersById = (req, res, next) => {
 const patchUsersInfo = (req, res, next) => {
   const userId = req.user._id;
   const { name, about } = req.body;
-  User.findByIdAndUpdate(userId, { name, about }, { new: true })
+  User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       res.send(user);
     })
@@ -97,7 +96,7 @@ const patchUsersInfo = (req, res, next) => {
 const patchUsersAvatar = (req, res, next) => {
   const userId = req.user._id;
   const { avatar } = req.body;
-  User.findByIdAndUpdate(userId, { avatar }, { new: true })
+  User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       res.send(user);
     })
@@ -119,17 +118,11 @@ const login = (req, res, next) => {
       }
       const data = await bcrypt.compare(password, user.password);
       if (data) {
-<<<<<<< HEAD
         const token = jwt.sign(
           { _id: user._id },
-          'some-secret-key',
-          { expiresIn: '7d' }
+          NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+          { expiresIn: '7d' },
         );
-=======
-        const token = jwt.sign({ _id: user._id }, 
-NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
- { expiresIn: '7d' });
->>>>>>> de96dcf0d4c6e83f5cce5fadd999000577820ed1
         return res.cookie('jwt', token, {
           httpOnly: true,
         }).send({ message: 'Успешно' });

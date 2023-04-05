@@ -2,18 +2,17 @@ require('dotenv').config();
 const { errors } = require('celebrate');
 const mongoose = require('mongoose');
 const express = require('express');
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const userRouter = require('./routes/users');
 const cardRouter = require('./routes/cards');
 const { postUsers, login } = require('./controllers/users');
 const { loginValidation, postUsersValidation } = require('./middlewares/validate');
 const { auth } = require('./middlewares/auth');
-const { requestLogger, errorLogger, } = require('./middlewares/logger');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 const NotFoundError = require('./errors/NotFoundError');
 
 const app = express();
-const PORT = 3000;
+const { PORT = 3000 } = process.env;
 
 const allowedCors = [
   'https://project-mesto.antonlystso.nomoredomains.work',
@@ -23,7 +22,7 @@ const allowedCors = [
 
 app.use((req, res, next) => {
   const { origin } = req.headers;
-  
+
   const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
   const requestHeaders = req.headers['access-control-request-headers'];
   if (allowedCors.includes(origin)) {
@@ -34,7 +33,7 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
     res.header('Access-Control-Allow-Headers', requestHeaders);
 
-    return res.status(200).send();
+    res.status(200).send();
   }
 
   next();
@@ -42,7 +41,7 @@ app.use((req, res, next) => {
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cookieParser());
 
 app.use(requestLogger);
@@ -71,7 +70,6 @@ app.use('*', (req, res, next) => {
 app.use(errorLogger);
 
 app.use(errors());
-
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
