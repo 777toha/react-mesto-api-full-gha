@@ -15,6 +15,8 @@ const auth = (req, res, next) => {
     } catch (e) {
       next(new UnauthorizedError('Необходима авторизация'));
     }
+  } else {
+    next(new UnauthorizedError('Необходима авторизация'));
   }
 };
 
